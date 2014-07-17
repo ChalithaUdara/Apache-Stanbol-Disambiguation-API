@@ -1,6 +1,7 @@
 #Ignoring files
-.classpath
-.project
-.settings
+*/.classpath
+*/.project
+*/.settings
 #Ignoring target folder
-target/
+*/target/
+*/data/
