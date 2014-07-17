@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.apache.stanbol</groupId>
-	<artifactId>aidalight-server</artifactId>
+	<artifactId>stanbol-aidalight-server</artifactId>
 	<!-- <packaging>war</packaging> -->
 	<version>1.0-SNAPSHOT</version>
-	<name>aidalight-server</name>
+	<name>stanbol-aidalight-server</name>
 
 	<build>
 		<finalName>aidalight-server</finalName>
