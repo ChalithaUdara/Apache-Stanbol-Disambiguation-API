@@ -27,12 +27,15 @@
 				<artifactId>${jetty.artifactId}</artifactId>
 				<version>${jetty.version}</version>
 				<configuration>
+					<stopPort>9966</stopPort>
+					<stopKey>foo</stopKey>
 					<webAppSourceDirectory>${basedir}/src/main/java/mpi/aidalight/service/web/</webAppSourceDirectory>
 					<webApp>
 						<descriptor>${project.basedir}/src/main/webapp/WEB-INF/web.xml</descriptor>
 						<!-- <overrideDescriptor>${project.basedir}/src/mpi/aida/service/web/webapp/WEB-INF/web.xml</overrideDescriptor> -->
 						<contextPath>/${project.artifactId}</contextPath>
 					</webApp>
+					<jvmArgs>-Xmx30G -Djetty.port=9090</jvmArgs>
 				</configuration>
 			</plugin>
 		</plugins>
