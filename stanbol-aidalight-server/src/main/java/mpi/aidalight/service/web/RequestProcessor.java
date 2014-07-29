@@ -44,7 +44,7 @@ public class RequestProcessor {
 		try {
 			results = disambiguator.disambiguate(text, null);
 		} catch (Exception e) {
-			e.printStackTrace();
+			return "Cannot Disambiguate Text.....";
 		}
 		
 		toReturn += "Results:\n";
