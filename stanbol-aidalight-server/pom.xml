@@ -190,6 +190,7 @@
 			<artifactId>jetty-servlets</artifactId>
 			<version>${jetty.version}</version>
 		</dependency>
+		
 		<!-- for jars not in central repo -->
 		<dependency>
 			<groupId>mpi.aida</groupId>
