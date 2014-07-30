@@ -76,8 +76,12 @@ public class RequestProcessor {
 		for (MentionAnnotation mentionAnnotation : mentionAnnotations) {
 			Mention mention = new Mention();
 			mention.setMention(mentionAnnotation.textAnnotation);
-			mention.setStartToken(mentionAnnotation.start);
-			mention.setEndToken(mentionAnnotation.end);
+//			mention.setStartToken(mentionAnnotation.start);
+//			mention.setEndToken(mentionAnnotation.end);
+			
+			// In aida-light start refer to start token count, not the offset
+			mention.setCharOffset(mentionAnnotation.start);
+			mention.setCharLength(mentionAnnotation.end - mentionAnnotation.start);
 			
 			mentions.add(mention);
 		}
