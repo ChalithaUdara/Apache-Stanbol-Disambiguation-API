@@ -101,7 +101,7 @@ public class RequestProcessor {
 
 		//Disambiguate mentions
 		try {
-			results = disambiguator.disambiguate(disambiguationData.text, null);
+			results = disambiguator.disambiguate(disambiguationData.text, mentions);
 		} catch (Exception e) {
 			return Response.serverError().build();
 		}
