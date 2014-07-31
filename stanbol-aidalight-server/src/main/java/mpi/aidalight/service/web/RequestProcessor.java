@@ -112,8 +112,8 @@ public class RequestProcessor {
 		for (Entry<Mention, Entity> entry : it) {
 			DisambiguationResult disambiguationResult = new DisambiguationResult();
 			disambiguationResult.mention = entry.getKey().getMention();
-			disambiguationResult.entity = entry.getValue().getName();
-			disambiguationResult.disambiguationConfidence = entry.getKey().getDisambiguationConfidence();
+			disambiguationResult.entity = entry.getValue().getNMEnormalizedName();
+			disambiguationResult.disambiguationConfidence = entry.getValue().getLocalSimilarity();
 			
 			disambiguationResults.add(disambiguationResult);
 		}
