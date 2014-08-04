@@ -10,6 +10,12 @@ public class DisambiguationResult {
 	protected String mention;
 	
 	@XmlElement
+	protected int start;
+	
+	@XmlElement
+	protected int end;
+	
+	@XmlElement
 	protected String entity;
 	
 	@XmlElement

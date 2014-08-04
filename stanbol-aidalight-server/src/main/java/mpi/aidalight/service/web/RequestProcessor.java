@@ -76,16 +76,17 @@ public class RequestProcessor {
 		for (MentionAnnotation mentionAnnotation : mentionAnnotations) {
 			Mention mention = new Mention();
 			mention.setMention(mentionAnnotation.textAnnotation);
-//			mention.setStartToken(mentionAnnotation.start);
-//			mention.setEndToken(mentionAnnotation.end);
-			
+			// mention.setStartToken(mentionAnnotation.start);
+			// mention.setEndToken(mentionAnnotation.end);
+
 			// In aida-light start refer to start token count, not the offset
 			mention.setCharOffset(mentionAnnotation.start);
-			mention.setCharLength(mentionAnnotation.end - mentionAnnotation.start);
-			
+			mention.setCharLength(mentionAnnotation.end
+					- mentionAnnotation.start);
+
 			mentions.add(mention);
 		}
-		
+
 		// define settings for disambiguation
 		GraphSettings gSettings = new GraphSettingsExperiment();
 		NED disambiguator = new NED(new Settings(), gSettings);
@@ -99,25 +100,30 @@ public class RequestProcessor {
 
 		Map<Mention, Entity> results = new HashMap<Mention, Entity>();
 
-		//Disambiguate mentions
+		// Disambiguate mentions
 		try {
-			results = disambiguator.disambiguate(disambiguationData.text, mentions);
+			results = disambiguator.disambiguate(disambiguationData.text,
+					mentions);
 		} catch (Exception e) {
 			return Response.serverError().build();
 		}
-		
+
 		List<DisambiguationResult> disambiguationResults = new ArrayList<>();
-		
+
 		Set<Entry<Mention, Entity>> it = results.entrySet();
 		for (Entry<Mention, Entity> entry : it) {
 			DisambiguationResult disambiguationResult = new DisambiguationResult();
 			disambiguationResult.mention = entry.getKey().getMention();
-			disambiguationResult.entity = entry.getValue().getNMEnormalizedName();
-			disambiguationResult.disambiguationConfidence = entry.getValue().getLocalSimilarity();
-			
+			disambiguationResult.start = entry.getKey().getCharOffset();
+			disambiguationResult.end = entry.getKey().getCharOffset()
+					+ entry.getKey().getCharLength();
+			disambiguationResult.entity = entry.getValue()
+					.getNMEnormalizedName();
+			disambiguationResult.disambiguationConfidence = entry.getValue()
+					.getLocalSimilarity();
+
 			disambiguationResults.add(disambiguationResult);
 		}
-		
 
 		GenericEntity<List<DisambiguationResult>> entity = new GenericEntity<List<DisambiguationResult>>(
 				disambiguationResults) {
