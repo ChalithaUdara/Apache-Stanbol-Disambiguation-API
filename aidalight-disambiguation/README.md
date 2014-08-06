@@ -11,7 +11,8 @@ This Engine Can be used to disambiguate Yago Entities within Apache Stanbol
 3) Now in the configuarion tab of the console, you can see the installed engine.
    Configure the property "enhancer.engine.aidalight-disambiguation.service.name" to the URL
    of the Aidalight server with port 
-   E.g: http://http://localhost:9090 
+
+   E.g: http://localhost:9090 
  
 ## Using configured engine in an enhancement chain
 
