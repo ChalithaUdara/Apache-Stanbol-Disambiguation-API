@@ -139,7 +139,6 @@ public class AidalightDisambiguationEngine extends
 		}
 
 		log.info("Text Content: " + text);
-		textAnnotationMap = new HashMap<String, TextAnnotation>();
 
 		MGraph graph = ci.getMetadata();
 		ci.getLock().readLock().lock();
@@ -191,7 +190,7 @@ public class AidalightDisambiguationEngine extends
 						if(disambiguatedEntity != null){
 							UriRef disambiguatedEntityUri = disambiguatedEntity.getUri();
 							EnhancementEngineHelper.set(graph, disambiguatedEntityUri, ENHANCER_CONFIDENCE,
-			                        disambiguatedEntity.getDisambiguationConfidence(), literalFactory);
+			                        disambiguationResult.disambiguationConfidence, literalFactory);
 							EnhancementEngineHelper.addContributingEngine(graph, disambiguatedEntityUri, this);
 						}
 					}
@@ -267,12 +266,6 @@ public class AidalightDisambiguationEngine extends
 					+ "_"
 					+ Integer.toString(textAnnotation.getEnd());
 			textAnnotationMap.put(textAnnotationKey, textAnnotation);
-			// just to test text annotations are obtained correctly
-			// EnhancementEngineHelper.set(graph, uri,
-			// ENHANCER_SELECTED_TEXT, "CHANGED_BY_ME",
-			// LiteralFactory.getInstance());
-			// EnhancementEngineHelper.addContributingEngine(graph, uri,
-			// this);
 		}
 	}
 
@@ -289,9 +282,14 @@ public class AidalightDisambiguationEngine extends
 			service_url = value.toString();
 			log.info("Service URL: " + service_url);
 			client = ClientBuilder.newClient();
+			textAnnotationMap = new HashMap<String, TextAnnotation>();
 		} catch (IOException e) {
 			log.error("Failed to update the configuration", e);
 		}
+	}
+	
+	public Map<String, TextAnnotation> getTextMap() {
+		return this.textAnnotationMap;
 	}
 
 	@Deactivate
