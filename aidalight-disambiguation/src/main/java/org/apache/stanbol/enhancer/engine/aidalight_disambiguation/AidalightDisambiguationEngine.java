@@ -26,6 +26,7 @@ import static org.apache.stanbol.enhancer.servicesapi.rdf.Properties.ENHANCER_CO
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -96,6 +97,11 @@ public class AidalightDisambiguationEngine extends
 	private static final String RESOURCE_PATTERN = "http://yago-knowledge.org/resource/";
 
 	/**
+	 * decrease confidence values provided by stanbol
+	 */
+	private static final double CONFIDENCE_DEGRADE_FACTOR = 0.2;
+
+	/**
 	 * This ensures this engine will be used as a post processing engine
 	 */
 	public static final Integer defaultOrder = ServiceProperties.ORDERING_POST_PROCESSING - 90;
@@ -147,6 +153,12 @@ public class AidalightDisambiguationEngine extends
 		} finally {
 			ci.getLock().readLock().unlock();
 		}
+		ci.getLock().writeLock().lock();
+		try {
+			this.changeDefaultConfidences(graph);
+		} finally {
+			ci.getLock().writeLock().unlock();
+		}
 		// prepare data to send for disambiguation service
 		List<MentionAnnotation> mentionAnnotations = new ArrayList<MentionAnnotation>();
 		for (TextAnnotation textAnnotation : textAnnotationMap.values()) {
@@ -181,20 +193,27 @@ public class AidalightDisambiguationEngine extends
 						.get(key);
 				Map<String, EntityAnnotation> entityAnnotationMap = selectedTextAnnotation
 						.getEntityAnnotationsMap();
-				//update confidence values if there are more than one suggested entities
-				if(entityAnnotationMap.size() > 1){
+				// update confidence values if there are more than one suggested
+				// entities
+				if (entityAnnotationMap.size() > 1) {
 					ci.getLock().writeLock().lock();
-					try{
-						EntityAnnotation disambiguatedEntity = entityAnnotationMap.get(disambiguationResult.entity);
-						log.info("Disambiguated Entity: "+disambiguatedEntity);
-						if(disambiguatedEntity != null){
-							UriRef disambiguatedEntityUri = disambiguatedEntity.getUri();
-							EnhancementEngineHelper.set(graph, disambiguatedEntityUri, ENHANCER_CONFIDENCE,
-			                        disambiguationResult.disambiguationConfidence, literalFactory);
-							EnhancementEngineHelper.addContributingEngine(graph, disambiguatedEntityUri, this);
+					try {
+						EntityAnnotation disambiguatedEntity = entityAnnotationMap
+								.get(disambiguationResult.entity);
+						log.info("Disambiguated Entity: " + disambiguatedEntity);
+						if (disambiguatedEntity != null) {
+							UriRef disambiguatedEntityUri = disambiguatedEntity
+									.getUri();
+							EnhancementEngineHelper
+									.set(graph,
+											disambiguatedEntityUri,
+											ENHANCER_CONFIDENCE,
+											disambiguationResult.disambiguationConfidence,
+											literalFactory);
+							EnhancementEngineHelper.addContributingEngine(
+									graph, disambiguatedEntityUri, this);
 						}
-					}
-					finally{
+					} finally {
 						ci.getLock().writeLock().unlock();
 					}
 				}
@@ -287,7 +306,30 @@ public class AidalightDisambiguationEngine extends
 			log.error("Failed to update the configuration", e);
 		}
 	}
-	
+
+	public void changeDefaultConfidences(MGraph graph) {
+		Collection<TextAnnotation> textAnnotations = textAnnotationMap.values();
+		for (TextAnnotation textAnnotation : textAnnotations) {
+			Collection<EntityAnnotation> entityAnnotations = textAnnotation
+					.getEntityAnnotationsMap().values();
+			if (entityAnnotations.size() > 1) {
+				for (EntityAnnotation entityAnnotation : entityAnnotations) {
+					UriRef uri = entityAnnotation.getUri();
+					EnhancementEngineHelper
+							.set(graph,
+									uri,
+									ENHANCER_CONFIDENCE,
+									entityAnnotation
+											.getDisambiguationConfidence()
+											* CONFIDENCE_DEGRADE_FACTOR,
+									literalFactory);
+					EnhancementEngineHelper.addContributingEngine(graph, uri,
+							this);
+				}
+			}
+		}
+	}
+
 	public Map<String, TextAnnotation> getTextMap() {
 		return this.textAnnotationMap;
 	}
