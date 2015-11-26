@@ -4,13 +4,13 @@ This project provides entity disambiguation capability for
 entities returned from Stanbol entity linking engines
 
 This projects consists of two main components
-	1) Disambiguation Server
-	2) Disambiguation engine for Apache Stanbol
+1. Disambiguation Server
+2. Disambiguation engine for Apache Stanbol
 	
 ## Disambiguation Server
 
 Disambiguation server provides REST services for entity disambiguation.
-This server is based on the project "Aidalight, High-throughput accurate NED system".
+This server is based on the project **"Aidalight, High-throughput accurate NED system"**.
 (https://code.google.com/p/aidalight/)
 
 ## Disambiguation Engine for Apache Stanbol
