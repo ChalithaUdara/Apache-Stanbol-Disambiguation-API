@@ -4,8 +4,10 @@ This project provides entity disambiguation capability for
 entities returned from Stanbol entity linking engines
 
 This projects consists of two main components
+```
 1. Disambiguation Server
 2. Disambiguation engine for Apache Stanbol
+```
 	
 ## Disambiguation Server
 
